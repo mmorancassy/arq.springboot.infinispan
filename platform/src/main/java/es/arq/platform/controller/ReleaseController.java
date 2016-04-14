@@ -1,5 +1,9 @@
 package es.arq.platform.controller;
 
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -16,6 +20,9 @@ import es.arq.persistence.provider.exceptions.PersistenceException;
 @ComponentScan("es.arq.*")
 public class ReleaseController {
 
+	// The Logger
+	private static final Logger LOG = LoggerFactory.getLogger(ReleaseController.class);
+	
 	@Autowired
 	private DatabaseProvider mongoProvider;		
 	
@@ -23,7 +30,10 @@ public class ReleaseController {
     @ResponseBody
     String home() {
     	try {
-			mongoProvider.query("", "Regions",  100);
+			Map<String, String> results = mongoProvider.query("", "Regions",  100);
+			
+			results.forEach((id, doc) -> LOG.info("Retrieve document: " + doc + " with id: " + id));
+			
 			return "Hello World!";
 		} catch (PersistenceException e) {
 			return "500";
