@@ -1,2 +1,2 @@
-# arq.springboot.infinispan
-SpringBoot concept test integrated with Infinispan in memory data grid
+# SpringBoot-MongoDB-Infinispan architecture
+SpringBoot concept test integrated with MongoDB and Infinispan in memory data grid

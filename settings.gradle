@@ -10,9 +10,7 @@
  */
 
 rootProject.name = 'arq.springboot.infinispan'
-include 'platform'
-include 'persistence'
-include 'front'
+include 'platform', 'persistence', 'front'
 
 project(':front').projectDir = "$rootDir/front" as File
 project(':platform').projectDir = "$rootDir/platform" as File

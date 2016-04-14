@@ -1,19 +1,51 @@
-allprojects  {
-  apply plugin: 'java'
-
-  group = 'arq.base'
-version = '1.0-SNAPSHOT'
-}
-
-subprojects {
-  apply plugin: 'java'
-  sourceCompatibility = 1.8
-  targetCompatibility = 1.8
-
-  
+buildscript {
   repositories {
     jcenter()
   }
+	
+  dependencies {
+    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.3.3.RELEASE'
+  }
+}
+  
+allprojects  {
 
+  apply plugin: 'java'
+  
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+  group  			  = 'arq.base'
+  version 			  = '1.0-SNAPSHOT'  
+  
+  repositories { 
+  	jcenter()
+  }
+  
+}
+
+subprojects {
+	project(':platform') {
+		apply plugin: 'spring-boot'
+		
+	    repositories { 
+	  	  jcenter()
+	    }		
+	    
+		bootRepackage {
+	      mainClass = 'es.arq.platform.controller.ReleaseController'
+		}  	    
+	}
+	
+	project(':persistence') {
+		apply plugin: 'spring-boot'
+		
+	    repositories { 
+	  	  jcenter()
+	    }		
+	    
+		bootRepackage {
+	      mainClass = 'es.arq.platform.controller.ReleaseController'
+		}  	    
+	}	
   
 }
