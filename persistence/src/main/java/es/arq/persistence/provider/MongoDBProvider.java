@@ -1,17 +1,21 @@
 package es.arq.persistence.provider;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.stereotype.Component;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.WriteResult;
+import com.mongodb.util.JSON;
 
 import es.arq.persistence.provider.exceptions.PersistenceException;
 
@@ -29,9 +33,29 @@ public class MongoDBProvider implements DatabaseProvider {
 	}
 
 	@Override
-	public String insert(String document) throws PersistenceException {
-		// TODO Auto-generated method stub
-		return null;
+	public String insert(String document, String collection) throws PersistenceException {
+		String documentInserted = null;
+		
+		try {
+			DB db = this.mongo.getDb();
+			
+			LOG.info("Accessing collection: " + collection + " on MongoDB database: " + db.getName());
+
+			DBObject jsonDoc = (DBObject)JSON.parse(document);
+			List<DBObject> documents = new ArrayList<DBObject>();
+			documents.add(jsonDoc);
+			WriteResult result = db.getCollection(collection).insert(documents);
+						
+			LOG.info("Document sucessfully inserted in database: " + result.toString());
+			
+			documentInserted = result.toString();
+			
+		} catch (Exception e) {
+			LOG.error("Se ha producido un error al tratar de insertar un documento en la base de datos", e);
+			throw new PersistenceException("Se ha producido un error al tratar de insertar un documento en la base de datos", e);
+		}
+		
+		return documentInserted;
 	}
 
 	@Override
@@ -47,15 +71,34 @@ public class MongoDBProvider implements DatabaseProvider {
 	}
 
 	@Override
-	public String getById(String documentId) throws PersistenceException {
-		// TODO Auto-generated method stub
-		return null;
+	public String getById(String collection, String documentId) throws PersistenceException {
+		String document = null;
+		
+		try {
+			DB db = this.mongo.getDb();
+			
+			LOG.info("Accessing collection: " + collection + " on MongoDB database: " + db.getName());
+
+			BasicDBObject dbo = new BasicDBObject();
+			dbo.put("_id", new ObjectId(documentId));
+			DBObject result = db.getCollection(collection).findOne(dbo);
+						
+			LOG.info("Retrieved document from database: " + result.toString());
+			
+			document = result.toString();
+			
+		} catch (Exception e) {
+			LOG.error("Se ha producido un error al tratar de recuperar un documento de la base de datos", e);
+			throw new PersistenceException("Se ha producido un error al tratar de recuperar un documento de la base de datos", e);
+		}
+		
+		return document;
 	}
 
 	@Override
-	public Map<String, String> query(String query, String collection, int limit) throws PersistenceException {
+	public List<String> query(String query, String collection, int limit) throws PersistenceException {
 				
-		Map<String, String> documents = null;
+		List<String> documents = null;
 		
 		try {
 			DB db = this.mongo.getDb();
@@ -71,19 +114,19 @@ public class MongoDBProvider implements DatabaseProvider {
 			
 			LOG.info("Number of documents retrieved from database: " + results.count());
 			
-			documents = new HashMap<String, String>();
+			documents = new ArrayList<String>();
 			while (results.hasNext()) {
 				DBObject item = results.next();
 				String document = item.toString();
 				String _id = item.get("_id").toString();
 				
-				documents.put(_id, document);
+				documents.add(document);
 				
 				LOG.debug("Document retrieved with id: " + _id + " json: " + document);
 			}
 		} catch (Exception e) {
-			LOG.error("", e);
-			throw new PersistenceException("", e);
+			LOG.error("Se ha producido un error al tratar de recuperar documentos de la base de datos", e);
+			throw new PersistenceException("Se ha producido un error al tratar de recuperar documentos de la base de datos", e);
 		}
 		
 		return documents;

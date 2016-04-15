@@ -1,6 +1,6 @@
 package es.arq.persistence.provider;
 
-import java.util.Map;
+import java.util.List;
 
 import es.arq.persistence.provider.exceptions.PersistenceException;
 
@@ -10,9 +10,10 @@ public interface DatabaseProvider {
 	 * Inserts JSON document
 	 * 
 	 * @param document
+	 * @param collection
 	 * @return
 	 */
-	public String insert(String document) throws PersistenceException;
+	public String insert(String document, String collection) throws PersistenceException;
 	
 	/**
 	 * Deletes JSON document
@@ -34,10 +35,11 @@ public interface DatabaseProvider {
 	/**
 	 * Retrieves JSON document
 	 * 
+	 * @param collection
 	 * @param documentId
 	 * @return
 	 */
-	public String getById(String documentId) throws PersistenceException;
+	public String getById(String collection, String documentId) throws PersistenceException;
 	
 	/**
 	 * Retrieves JSON document Map<id,json>
@@ -47,5 +49,5 @@ public interface DatabaseProvider {
 	 * @param limit
 	 * @return
 	 */
-	public Map<String, String> query(String query, String collection, int limit) throws PersistenceException;
+	public List<String> query(String query, String collection, int limit) throws PersistenceException;
 }

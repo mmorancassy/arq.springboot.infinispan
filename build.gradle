@@ -21,6 +21,10 @@ allprojects  {
   	jcenter()
   }
   
+  dependencies {
+  	testCompile 'org.springframework.boot:spring-boot-starter-test:1.2.0.RELEASE'
+  }
+  
 }
 
 subprojects {
@@ -32,7 +36,7 @@ subprojects {
 	    }		
 	    
 		bootRepackage {
-	      mainClass = 'es.arq.platform.controller.ReleaseController'
+	      mainClass = 'es.arq.persistence.application.Application'
 		}  	    
 	}
 	
@@ -44,7 +48,7 @@ subprojects {
 	    }		
 	    
 		bootRepackage {
-	      mainClass = 'es.arq.platform.controller.ReleaseController'
+	      mainClass = 'es.arq.platform.application.WebApplication'
 		}  	    
 	}	
   
