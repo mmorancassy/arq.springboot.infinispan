@@ -3,9 +3,14 @@ package es.arq.platform.controller.rest;
 import java.util.List;
 
 import org.jsondoc.core.annotation.Api;
+import org.jsondoc.core.annotation.ApiBodyObject;
+import org.jsondoc.core.annotation.ApiError;
+import org.jsondoc.core.annotation.ApiErrors;
 import org.jsondoc.core.annotation.ApiMethod;
+import org.jsondoc.core.annotation.ApiPathParam;
 import org.jsondoc.core.annotation.ApiResponseObject;
 import org.jsondoc.core.pojo.ApiStage;
+import org.jsondoc.core.pojo.ApiVerb;
 import org.jsondoc.core.pojo.ApiVisibility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.arq.persistence.provider.DatabaseProvider;
 import es.arq.persistence.provider.exceptions.PersistenceException;
+import es.arq.platform.controller.dto.Release;
 
-@Api(name = "Releases services", 
+@Api(name = "Music Releases service", 
 	 description = "Methods for managing Discogs personal collection", 
-	 group = "Music", 
 	 visibility = ApiVisibility.PUBLIC, 
 	 stage = ApiStage.ALPHA)
 @RestController
@@ -37,10 +43,16 @@ public class ReleaseController {
 	@Autowired
 	private DatabaseProvider mongoProvider;		
 	
-	@ApiMethod
+	@ApiMethod(description="Devuelve un documento con la información relativa a un disco", 
+			   verb=ApiVerb.GET,
+			   responsestatuscode="200",
+			   produces={MediaType.APPLICATION_JSON_VALUE})
+	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+						  @ApiError(code="500", description="Internal Server Error")})
     @RequestMapping(value="/{id}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public @ApiResponseObject ResponseEntity<Object> find(@PathVariable String id) {
+    public @ApiResponseObject ResponseEntity<Object> find(@ApiPathParam(name="id", format="String", description="ID del objeto a recuperar de la base de datos") 
+    													  @PathVariable String id) {
     	String document = null;
     	try {
     		document = mongoProvider.getById("garbage", id);
@@ -52,7 +64,12 @@ public class ReleaseController {
 		}
     }
     
-	@ApiMethod
+	@ApiMethod(description="Devuelve todos los documentos existentes en la colección de discos", 
+			   verb=ApiVerb.GET,
+			   responsestatuscode="200",
+			   produces={MediaType.APPLICATION_JSON_VALUE})
+	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+			  			  @ApiError(code="500", description="Internal Server Error")})	
     @RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public @ApiResponseObject ResponseEntity<Object> findAll() {
@@ -66,6 +83,18 @@ public class ReleaseController {
 			return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
 		}
     }
+	
+	@ApiMethod(description="Inserta un nuevo disco en la base de datos", 
+			   verb=ApiVerb.POST,
+			   responsestatuscode="200",
+			   produces={MediaType.APPLICATION_JSON_VALUE})
+	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+			  			  @ApiError(code="500", description="Internal Server Error")})	
+	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody	
+	public @ApiResponseObject ResponseEntity<Object> insert(@ApiBodyObject @RequestBody Release release) {
+		return null;
+	}
 
 }
 
