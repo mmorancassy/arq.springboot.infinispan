@@ -48,7 +48,7 @@ public class MongoDBProvider implements DatabaseProvider {
 						
 			LOG.info("Document sucessfully inserted in database: " + result.toString());
 			
-			documentInserted = result.toString();
+			documentInserted = jsonDoc.get("_id").toString();
 			
 		} catch (Exception e) {
 			LOG.error("Se ha producido un error al tratar de insertar un documento en la base de datos", e);

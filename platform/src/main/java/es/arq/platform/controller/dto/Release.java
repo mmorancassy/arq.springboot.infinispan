@@ -83,6 +83,72 @@ public class Release {
 		this.label = label;
 	}
 	
-	
+	/**
+	 * Returns a JSON/String representation of this object
+	 */
+	public String toString() {
+		StringBuffer documentSt = new StringBuffer("{");
+		
+		if (this.author != null && !"".equals(author)) {
+			documentSt.append("\"author\": ")
+					  .append("\"")
+					  .append(this.author)
+					  .append("\"")
+					  .append(",");
+		}
+		
+		if (this.title != null && !"".equals(title)) {
+			documentSt.append("\"title\": ")
+					  .append("\"")
+					  .append(this.title)
+					  .append("\"")
+					  .append(",");
+		}		
+		
+		if (this.releaseDate != null && !"".equals(releaseDate)) {
+			documentSt.append("\"releaseDate\": ")
+					  .append("\"")
+					  .append(this.releaseDate)
+					  .append("\"")
+					  .append(",");
+		}		
+		
+		if (this.catalogNumber != null && !"".equals(catalogNumber)) {
+			documentSt.append("\"catalogNumber\": ")
+					  .append("\"")
+					  .append(this.catalogNumber)
+					  .append("\"")
+					  .append(",");
+		}	
+		
+		if (this.format != null && !"".equals(format)) {
+			documentSt.append("\"format\": ")
+					  .append("\"")
+					  .append(this.format)
+					  .append("\"")
+					  .append(",");
+		}	
+		
+		if (this.country != null && !"".equals(country)) {
+			documentSt.append("\"country\": ")
+					  .append("\"")
+					  .append(this.country)
+					  .append("\"")
+					  .append(",");
+		}
+		
+		if (this.label != null && !"".equals(label)) {
+			documentSt.append("\"label\": ")
+					  .append("\"")
+					  .append(this.label)
+					  .append("\"")
+					  .append(",");
+		}		
+		
+		documentSt.deleteCharAt(documentSt.length()-1); // remove last comma
+		documentSt.append("}");
+		
+		return documentSt.toString();
+	}
 
 }

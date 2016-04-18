@@ -93,7 +93,17 @@ public class ReleaseController {
 	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody	
 	public @ApiResponseObject ResponseEntity<Object> insert(@ApiBodyObject @RequestBody Release release) {
-		return null;
+		LOG.info("Document to insert in collection: " + release.toString());
+		
+		String objectId = null;
+		try {
+			objectId = mongoProvider.insert(release.toString(), "garbage");
+		} catch (PersistenceException e) {
+			// TODO define code errors
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<Object>(objectId, HttpStatus.OK);
 	}
 	
 	@ApiMethod(description="Actualiza un disco existente en la base de datos", 
