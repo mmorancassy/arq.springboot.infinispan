@@ -31,7 +31,7 @@ public class MongoDBProviderTests {
 	@Test
 	public void testFindById() {
 		try {
-			String documentId = "5710cb2353421284160099b5";
+			String documentId = mongoProvider.insert("{\"test\" : \"data\"}", TEST_COLLECTION);
 			String document = mongoProvider.getById(TEST_COLLECTION, documentId);
 			
 			DBObject jsonDoc = (DBObject)JSON.parse(document);
@@ -65,5 +65,18 @@ public class MongoDBProviderTests {
 			Assert.fail(e.getMessage());
 		}
 	}
+	
+	@Test
+	public void testDelete() {
+		try  {
+			String documentId = mongoProvider.insert("{\"test\" : \"data\"}", TEST_COLLECTION);			
+			boolean result = mongoProvider.delete(documentId, TEST_COLLECTION);
+			
+			Assert.assertTrue(result);
+			
+		} catch (PersistenceException e) {
+			Assert.fail(e.getMessage());
+		}
+	}	
 
 }

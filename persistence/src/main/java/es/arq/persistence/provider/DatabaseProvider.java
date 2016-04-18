@@ -21,7 +21,7 @@ public interface DatabaseProvider {
 	 * @param documentId
 	 * @return
 	 */
-	public boolean delete(String documentId) throws PersistenceException;
+	public boolean delete(String documentId, String collection) throws PersistenceException;
 	
 	/**
 	 * Updates JSON document

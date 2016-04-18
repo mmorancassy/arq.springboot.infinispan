@@ -49,14 +49,13 @@ public class ReleaseController {
 			   produces={MediaType.APPLICATION_JSON_VALUE})
 	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
 						  @ApiError(code="500", description="Internal Server Error")})
-    @RequestMapping(value="/{id}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/{id}", method=RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
     public @ApiResponseObject ResponseEntity<Object> find(@ApiPathParam(name="id", format="String", description="ID del objeto a recuperar de la base de datos") 
     													  @PathVariable String id) {
     	String document = null;
     	try {
-    		document = mongoProvider.getById("garbage", id);
-			
+    		document = mongoProvider.getById("garbage", id);			
 			return new ResponseEntity<Object>(document, HttpStatus.OK);
 			
 		} catch (PersistenceException e) {
@@ -124,11 +123,26 @@ public class ReleaseController {
 			   produces={MediaType.APPLICATION_JSON_VALUE})
 	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
 			  			  @ApiError(code="500", description="Internal Server Error")})	
-	@RequestMapping(value="/{id}", method=RequestMethod.DELETE, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody	
 	public @ApiResponseObject ResponseEntity<Object> delete(@ApiPathParam(name="id", format="String", description="ID del objeto a borrar en la base de datos") 
 	  														@PathVariable String id) {
-		return null;
+		try {
+			boolean result = mongoProvider.delete(id, "garbage");
+			
+			String message = "";
+			if (result) {
+				message = "Document sucessfully deleted";
+			} else {
+				message = "Document can't be deleted from database";
+			}
+			
+			return new ResponseEntity<Object>(message, HttpStatus.OK);
+			
+		} catch (PersistenceException e) {
+			// TODO define code errors
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}	
 
 }

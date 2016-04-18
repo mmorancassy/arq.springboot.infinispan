@@ -59,9 +59,27 @@ public class MongoDBProvider implements DatabaseProvider {
 	}
 
 	@Override
-	public boolean delete(String documentId) throws PersistenceException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean delete(String documentId, String collection) throws PersistenceException {
+		boolean statusOperation = true;
+		try {
+			DB db = this.mongo.getDb();
+			
+			LOG.info("Accessing collection: " + collection + " on MongoDB database: " + db.getName());
+
+			DBObject jsonDoc = new BasicDBObject();
+			jsonDoc.put("_id", new ObjectId(documentId));
+			WriteResult result = db.getCollection(collection).remove(jsonDoc);
+						
+			LOG.info("Document sucessfully inserted in database: " + result.toString());
+			
+			statusOperation = (result.getN() > 0);
+			
+		} catch (Exception e) {
+			LOG.error("Se ha producido un error al tratar de insertar un documento en la base de datos", e);
+			throw new PersistenceException("Se ha producido un error al tratar de insertar un documento en la base de datos", e);
+		}
+		
+		return statusOperation;
 	}
 
 	@Override
@@ -83,9 +101,11 @@ public class MongoDBProvider implements DatabaseProvider {
 			dbo.put("_id", new ObjectId(documentId));
 			DBObject result = db.getCollection(collection).findOne(dbo);
 						
-			LOG.info("Retrieved document from database: " + result.toString());
-			
-			document = result.toString();
+			if (result != null) {
+				LOG.info("Retrieved document from database: " + result.toString());
+				
+				document = result.toString();
+			}
 			
 		} catch (Exception e) {
 			LOG.error("Se ha producido un error al tratar de recuperar un documento de la base de datos", e);
