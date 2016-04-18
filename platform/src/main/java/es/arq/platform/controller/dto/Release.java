@@ -16,7 +16,7 @@ public class Release {
 	private String releaseDate;
 	
 	@ApiObjectField(description = "Catalog number")
-	private String catalogNumnber;
+	private String catalogNumber;
 	
 	@ApiObjectField(description = "Release format -LP/CD/Cassette/DVD/VHS")
 	private String format;
@@ -51,12 +51,12 @@ public class Release {
 		this.releaseDate = releaseDate;
 	}
 
-	public String getCatalogNumnber() {
-		return catalogNumnber;
+	public String getCatalogNumber() {
+		return catalogNumber;
 	}
 
-	public void setCatalogNumnber(String catalogNumnber) {
-		this.catalogNumnber = catalogNumnber;
+	public void setCatalogNumber(String catalogNumber) {
+		this.catalogNumber = catalogNumber;
 	}
 
 	public String getFormat() {

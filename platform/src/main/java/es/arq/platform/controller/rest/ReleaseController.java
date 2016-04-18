@@ -34,7 +34,7 @@ import es.arq.platform.controller.dto.Release;
 	 visibility = ApiVisibility.PUBLIC, 
 	 stage = ApiStage.ALPHA)
 @RestController
-@RequestMapping(value="/releases", produces=MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="/api/v1/releases", produces=MediaType.APPLICATION_JSON_VALUE)
 public class ReleaseController {
 
 	// The Logger
@@ -90,11 +90,36 @@ public class ReleaseController {
 			   produces={MediaType.APPLICATION_JSON_VALUE})
 	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
 			  			  @ApiError(code="500", description="Internal Server Error")})	
-	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody	
 	public @ApiResponseObject ResponseEntity<Object> insert(@ApiBodyObject @RequestBody Release release) {
 		return null;
 	}
+	
+	@ApiMethod(description="Actualiza un disco existente en la base de datos", 
+			   verb=ApiVerb.PUT,
+			   responsestatuscode="200",
+			   produces={MediaType.APPLICATION_JSON_VALUE})
+	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+			  			  @ApiError(code="500", description="Internal Server Error")})	
+	@RequestMapping(method=RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody	
+	public @ApiResponseObject ResponseEntity<Object> update(@ApiBodyObject @RequestBody Release release) {
+		return null;
+	}	
+	
+	@ApiMethod(description="Borra un disco existente en la base de datos", 
+			   verb=ApiVerb.DELETE,
+			   responsestatuscode="200",
+			   produces={MediaType.APPLICATION_JSON_VALUE})
+	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+			  			  @ApiError(code="500", description="Internal Server Error")})	
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody	
+	public @ApiResponseObject ResponseEntity<Object> delete(@ApiPathParam(name="id", format="String", description="ID del objeto a borrar en la base de datos") 
+	  														@PathVariable String id) {
+		return null;
+	}	
 
 }
 
