@@ -40,6 +40,9 @@ public class ReleaseController {
 	// The Logger
 	private static final Logger LOG = LoggerFactory.getLogger(ReleaseController.class);
 	
+	// Release collection
+	private static final String RELEASE_COLLECTION = "garbage";
+	
 	@Autowired
 	private DatabaseProvider mongoProvider;		
 	
@@ -55,7 +58,7 @@ public class ReleaseController {
     													  @PathVariable String id) {
     	String document = null;
     	try {
-    		document = mongoProvider.getById("garbage", id);			
+    		document = mongoProvider.getById(RELEASE_COLLECTION, id);			
 			return new ResponseEntity<Object>(document, HttpStatus.OK);
 			
 		} catch (PersistenceException e) {
@@ -75,7 +78,7 @@ public class ReleaseController {
     	List<String> documents = null;
     	try {
     		// TODO add RequestParam for limit
-    		documents = mongoProvider.query("", "garbage", 100);
+    		documents = mongoProvider.query("", RELEASE_COLLECTION, 100);
 			
     		return new ResponseEntity<Object>(documents, HttpStatus.OK);
 		} catch (PersistenceException e) {
@@ -96,7 +99,7 @@ public class ReleaseController {
 		
 		String objectId = null;
 		try {
-			objectId = mongoProvider.insert(release.toString(), "garbage");
+			objectId = mongoProvider.insert(release.toString(), RELEASE_COLLECTION);
 		} catch (PersistenceException e) {
 			// TODO define code errors
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -116,7 +119,7 @@ public class ReleaseController {
 	public @ApiResponseObject ResponseEntity<Object> update(@ApiBodyObject @RequestBody Release release) {
 		String updatedDocument = null;
 		try {
-			updatedDocument = mongoProvider.update(release.toString(), "garbage");			
+			updatedDocument = mongoProvider.update(release.toString(), RELEASE_COLLECTION);			
 		} catch (PersistenceException e) {
 			// TODO define code errors
 			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -136,7 +139,7 @@ public class ReleaseController {
 	public @ApiResponseObject ResponseEntity<Object> delete(@ApiPathParam(name="id", format="String", description="ID del objeto a borrar en la base de datos") 
 	  														@PathVariable String id) {
 		try {
-			boolean result = mongoProvider.delete(id, "garbage");
+			boolean result = mongoProvider.delete(id, RELEASE_COLLECTION);
 			
 			String message = "";
 			if (result) {
