@@ -34,28 +34,28 @@ public class MongoDBProvider implements DatabaseProvider {
 
 	@Override
 	public String insert(String document, String collection) throws PersistenceException {
-		String documentInserted = null;
+		String insertedDocument = null;
 		
 		try {
 			DB db = this.mongo.getDb();
 			
 			LOG.info("Accessing collection: " + collection + " on MongoDB database: " + db.getName());
 
-			DBObject jsonDoc = (DBObject)JSON.parse(document);
+			DBObject dbo = (DBObject)JSON.parse(document);
 			List<DBObject> documents = new ArrayList<DBObject>();
-			documents.add(jsonDoc);
+			documents.add(dbo);
 			WriteResult result = db.getCollection(collection).insert(documents);
 						
 			LOG.info("Document sucessfully inserted in database: " + result.toString());
 			
-			documentInserted = jsonDoc.get("_id").toString();
+			insertedDocument = dbo.get("_id").toString();
 			
 		} catch (Exception e) {
 			LOG.error("Se ha producido un error al tratar de insertar un documento en la base de datos", e);
 			throw new PersistenceException("Se ha producido un error al tratar de insertar un documento en la base de datos", e);
 		}
 		
-		return documentInserted;
+		return insertedDocument;
 	}
 
 	@Override
@@ -66,9 +66,9 @@ public class MongoDBProvider implements DatabaseProvider {
 			
 			LOG.info("Accessing collection: " + collection + " on MongoDB database: " + db.getName());
 
-			DBObject jsonDoc = new BasicDBObject();
-			jsonDoc.put("_id", new ObjectId(documentId));
-			WriteResult result = db.getCollection(collection).remove(jsonDoc);
+			DBObject dbo = new BasicDBObject();
+			dbo.put("_id", new ObjectId(documentId));
+			WriteResult result = db.getCollection(collection).remove(dbo);
 						
 			LOG.info("Document sucessfully inserted in database: " + result.toString());
 			
@@ -83,9 +83,39 @@ public class MongoDBProvider implements DatabaseProvider {
 	}
 
 	@Override
-	public String update(String documentId, String document) throws PersistenceException {
-		// TODO Auto-generated method stub
-		return null;
+	public String update(String document, String collection) throws PersistenceException {
+		String updatedDocument = null;
+		
+		try {
+			DB db = this.mongo.getDb();
+			
+			LOG.info("Accessing collection: " + collection + " on MongoDB database: " + db.getName());
+			
+			DBObject dbo = (DBObject)JSON.parse(document);
+			String documentId = dbo.get("_id").toString();
+			DBObject criteria = new BasicDBObject();
+			criteria.put("_id", new ObjectId(documentId));
+			WriteResult result = db.getCollection(collection).update(criteria , dbo);
+
+			if (result.isUpdateOfExisting()) {
+				LOG.info("Document sucessfully updated in database: " + result.toString());
+				
+				DBObject jsonDoc = db.getCollection(collection).findOne(criteria);
+				
+				updatedDocument = jsonDoc.toString();
+				
+			} else {
+				LOG.info("document can't be updated in database: " + result.toString());
+				
+				updatedDocument = "";
+			}
+			
+		} catch (Exception e) {
+			LOG.error("Se ha producido un error al tratar de recuperar un documento de la base de datos", e);
+			throw new PersistenceException("Se ha producido un error al tratar de recuperar un documento de la base de datos", e);
+		}
+		
+		return updatedDocument;
 	}
 
 	@Override

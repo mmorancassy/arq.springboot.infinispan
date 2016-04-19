@@ -67,6 +67,27 @@ public class MongoDBProviderTests {
 	}
 	
 	@Test
+	public void testUpdate() {
+		try  {	
+			String document = "{\"author\" : \"test\", \"title\" : \"testtitle\", \"releaseDate\" : \"testdate\", " +
+			 		  "\"catalogNumber\" : \"testnumber\", \"format\" : \"testformat\", \"country\" : \"testcountry\", " +
+			          "\"label\" : \"testlabel\" }";
+		
+			String documentId = mongoProvider.insert(document, TEST_COLLECTION);	
+			
+			String documentUpdated = "{\"_id\" : {$oid: \"" + documentId + "\"}, \"author\" : \"testupdated\", \"title\" : \"testupdatedtitle\", \"releaseDate\" : \"testupdateddate\", " +
+									 "\"catalogNumber\" : \"testupdatednumber\", \"format\" : \"testupdatedformat\", \"country\" : \"testupdatedcountry\", " +
+									 "\"label\" : \"testupdatedlabel\" }";			
+			
+			String result = mongoProvider.update(documentUpdated, TEST_COLLECTION);
+			
+			Assert.assertTrue(result != null && !"".equals(result));	
+		} catch (PersistenceException e) {
+			Assert.fail(e.getMessage());
+		}
+	}
+	
+	@Test
 	public void testDelete() {
 		try  {
 			String documentId = mongoProvider.insert("{\"test\" : \"data\"}", TEST_COLLECTION);			

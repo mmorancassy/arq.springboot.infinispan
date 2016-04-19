@@ -24,13 +24,13 @@ public interface DatabaseProvider {
 	public boolean delete(String documentId, String collection) throws PersistenceException;
 	
 	/**
-	 * Updates JSON document
+	 * Updates JSON document, return updated object
 	 * 
-	 * @param documentId
 	 * @param document
+	 * @param collection
 	 * @return
 	 */
-	public String update(String documentId, String document) throws PersistenceException;
+	public String update(String document, String collection) throws PersistenceException;
 	
 	/**
 	 * Retrieves JSON document

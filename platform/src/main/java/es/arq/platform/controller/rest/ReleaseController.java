@@ -114,7 +114,15 @@ public class ReleaseController {
 	@RequestMapping(method=RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody	
 	public @ApiResponseObject ResponseEntity<Object> update(@ApiBodyObject @RequestBody Release release) {
-		return null;
+		String updatedDocument = null;
+		try {
+			updatedDocument = mongoProvider.update(release.toString(), "garbage");			
+		} catch (PersistenceException e) {
+			// TODO define code errors
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<Object>(updatedDocument, HttpStatus.OK);
 	}	
 	
 	@ApiMethod(description="Borra un disco existente en la base de datos", 

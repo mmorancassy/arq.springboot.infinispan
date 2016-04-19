@@ -6,6 +6,9 @@ import org.jsondoc.core.annotation.ApiObjectField;
 @ApiObject(name="Release", description="Información detallada de un disco")
 public class Release {
 	
+	@ApiObjectField(description = "object Id")
+	private String _id;
+	
 	@ApiObjectField(description = "Group/Author name")
 	private String author;
 	
@@ -26,6 +29,14 @@ public class Release {
 	
 	@ApiObjectField(description = "Label")
 	private String label;
+
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
 
 	public String getAuthor() {
 		return author;
@@ -88,6 +99,13 @@ public class Release {
 	 */
 	public String toString() {
 		StringBuffer documentSt = new StringBuffer("{");
+		
+		if (this._id != null && !"".equals(_id)) {
+			documentSt.append("\"_id\": { $oid: ")
+					  .append("\"")
+					  .append(this._id)
+					  .append("\" }, ");	
+		}
 		
 		if (this.author != null && !"".equals(author)) {
 			documentSt.append("\"author\": ")
