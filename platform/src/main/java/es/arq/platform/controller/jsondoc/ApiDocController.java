@@ -30,6 +30,11 @@ public class ApiDocController {
 	private boolean playgroundEnabled = true;
 
 	private MethodDisplay displayMethodAs = MethodDisplay.URI;
+	
+	@RequestMapping(value = "/api")
+	public String index() {
+		return "rest.html";
+	}	
 
 	@RequestMapping(value = "/apidoc", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody JSONDoc getApi() {
