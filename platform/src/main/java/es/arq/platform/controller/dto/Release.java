@@ -3,7 +3,7 @@ package es.arq.platform.controller.dto;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
 
-@ApiObject(name="Release", description="Información detallada de un disco")
+@ApiObject(name="Release", description="Music release detail information")
 public class Release {
 	
 	@ApiObjectField(description = "object Id")

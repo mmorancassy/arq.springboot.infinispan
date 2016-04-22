@@ -15,6 +15,7 @@ import org.jsondoc.core.pojo.ApiVisibility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,24 @@ import org.springframework.web.bind.annotation.RestController;
 import es.arq.persistence.provider.DatabaseProvider;
 import es.arq.persistence.provider.exceptions.PersistenceException;
 import es.arq.platform.controller.dto.Release;
+import es.arq.platform.controller.dto.StatusError;
+
+/**
+ * Response codes:
+ * 
+ * 200 – OK – Eyerything is working
+ * 201 – OK – New resource has been created
+ * 304 – Not Modified – The client can use cached data
+ * 400 – Bad Request – The request was invalid or cannot be served.
+ * 401 – Unauthorized – The request requires an user authentication
+ * 403 – Forbidden – The server understood the request, but is refusing it or the access is not allowed.
+ * 404 – Not found – There is no resource behind the URI.
+ * 422 – Unprocessable Entity – Should be used if the server cannot process the entity
+ * 500 – Internal Server Error
+ * 
+ * @author mmoran
+ *
+ */
 
 @Api(name = "Music Releases service", 
 	 description = "Methods for managing Discogs personal collection", 
@@ -50,19 +69,26 @@ public class ReleaseController {
 			   verb=ApiVerb.GET,
 			   responsestatuscode="200",
 			   produces={MediaType.APPLICATION_JSON_VALUE})
-	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+	@ApiErrors(apierrors={@ApiError(code="400", description="Bad Request"),
+						  @ApiError(code="401", description="Unauthorized"),
+						  @ApiError(code="403", description="Forbidden"),
+						  @ApiError(code="404", description="Not found"),
 						  @ApiError(code="500", description="Internal Server Error")})
-    @RequestMapping(value="/{id}", method=RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value="/{id}", method=RequestMethod.GET, produces={MediaType.APPLICATION_JSON_VALUE}, headers={HttpHeaders.AUTHORIZATION})		
     @ResponseBody
     public @ApiResponseObject ResponseEntity<Object> find(@ApiPathParam(name="id", format="String", description="ID del objeto a recuperar de la base de datos") 
     													  @PathVariable String id) {
     	String document = null;
     	try {
-    		document = mongoProvider.getById(RELEASE_COLLECTION, id);			
+    		document = mongoProvider.getById(RELEASE_COLLECTION, id);
+    		
 			return new ResponseEntity<Object>(document, HttpStatus.OK);
 			
 		} catch (PersistenceException e) {
-			return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+			StatusError errorDTO = new StatusError();
+			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			errorDTO.setErrorMessage(e.getMessage());
+			return new ResponseEntity<Object>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
     }
     
@@ -70,9 +96,12 @@ public class ReleaseController {
 			   verb=ApiVerb.GET,
 			   responsestatuscode="200",
 			   produces={MediaType.APPLICATION_JSON_VALUE})
-	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+	@ApiErrors(apierrors={@ApiError(code="400", description="Bad Request"),
+						  @ApiError(code="401", description="Unauthorized"),
+						  @ApiError(code="403", description="Forbidden"),
+						  @ApiError(code="404", description="Not found"),			
 			  			  @ApiError(code="500", description="Internal Server Error")})	
-    @RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, headers={HttpHeaders.AUTHORIZATION})
     @ResponseBody
     public @ApiResponseObject ResponseEntity<Object> findAll() {
     	List<String> documents = null;
@@ -81,18 +110,25 @@ public class ReleaseController {
     		documents = mongoProvider.query("", RELEASE_COLLECTION, 100);
 			
     		return new ResponseEntity<Object>(documents, HttpStatus.OK);
+    		
 		} catch (PersistenceException e) {
-			return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+			StatusError errorDTO = new StatusError();
+			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			errorDTO.setErrorMessage(e.getMessage());
+			return new ResponseEntity<Object>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
     }
 	
 	@ApiMethod(description="Inserta un nuevo disco en la base de datos", 
 			   verb=ApiVerb.POST,
-			   responsestatuscode="200",
+			   responsestatuscode="201",
 			   produces={MediaType.APPLICATION_JSON_VALUE})
-	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+	@ApiErrors(apierrors={@ApiError(code="400", description="Bad Request"),
+						  @ApiError(code="401", description="Unauthorized"),
+						  @ApiError(code="403", description="Forbidden"),
+						  @ApiError(code="404", description="Not found"),			
 			  			  @ApiError(code="500", description="Internal Server Error")})	
-	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE, headers={HttpHeaders.AUTHORIZATION})
 	@ResponseBody	
 	public @ApiResponseObject ResponseEntity<Object> insert(@ApiBodyObject @RequestBody Release release) {
 		LOG.info("Document to insert in collection: " + release.toString());
@@ -100,41 +136,53 @@ public class ReleaseController {
 		String objectId = null;
 		try {
 			objectId = mongoProvider.insert(release.toString(), RELEASE_COLLECTION);
+			
+			return new ResponseEntity<Object>(objectId, HttpStatus.CREATED);
+			
 		} catch (PersistenceException e) {
-			// TODO define code errors
-			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-		
-		return new ResponseEntity<Object>(objectId, HttpStatus.OK);
+			StatusError errorDTO = new StatusError();
+			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			errorDTO.setErrorMessage(e.getMessage());
+			return new ResponseEntity<Object>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
 	}
 	
 	@ApiMethod(description="Actualiza un disco existente en la base de datos", 
 			   verb=ApiVerb.PUT,
 			   responsestatuscode="200",
 			   produces={MediaType.APPLICATION_JSON_VALUE})
-	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+	@ApiErrors(apierrors={@ApiError(code="400", description="Bad Request"),
+						  @ApiError(code="401", description="Unauthorized"),
+						  @ApiError(code="403", description="Forbidden"),
+						  @ApiError(code="404", description="Not found"),	
 			  			  @ApiError(code="500", description="Internal Server Error")})	
-	@RequestMapping(method=RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method=RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE, headers={HttpHeaders.AUTHORIZATION})
 	@ResponseBody	
 	public @ApiResponseObject ResponseEntity<Object> update(@ApiBodyObject @RequestBody Release release) {
 		String updatedDocument = null;
 		try {
-			updatedDocument = mongoProvider.update(release.toString(), RELEASE_COLLECTION);			
+			updatedDocument = mongoProvider.update(release.toString(), RELEASE_COLLECTION);		
+			
+			return new ResponseEntity<Object>(updatedDocument, HttpStatus.OK);
+			
 		} catch (PersistenceException e) {
-			// TODO define code errors
-			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-		
-		return new ResponseEntity<Object>(updatedDocument, HttpStatus.OK);
+			StatusError errorDTO = new StatusError();
+			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			errorDTO.setErrorMessage(e.getMessage());
+			return new ResponseEntity<Object>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+		}		
 	}	
 	
 	@ApiMethod(description="Borra un disco existente en la base de datos", 
 			   verb=ApiVerb.DELETE,
-			   responsestatuscode="200",
+			   responsestatuscode="204",
 			   produces={MediaType.APPLICATION_JSON_VALUE})
-	@ApiErrors(apierrors={@ApiError(code="200", description="OK"),
+	@ApiErrors(apierrors={@ApiError(code="400", description="Bad Request"),
+						  @ApiError(code="401", description="Unauthorized"),
+						  @ApiError(code="403", description="Forbidden"),
+						  @ApiError(code="404", description="Not found"),	
 			  			  @ApiError(code="500", description="Internal Server Error")})	
-	@RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_VALUE, headers={HttpHeaders.AUTHORIZATION})
 	@ResponseBody	
 	public @ApiResponseObject ResponseEntity<Object> delete(@ApiPathParam(name="id", format="String", description="ID del objeto a borrar en la base de datos") 
 	  														@PathVariable String id) {
@@ -151,8 +199,10 @@ public class ReleaseController {
 			return new ResponseEntity<Object>(message, HttpStatus.OK);
 			
 		} catch (PersistenceException e) {
-			// TODO define code errors
-			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			StatusError errorDTO = new StatusError();
+			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			errorDTO.setErrorMessage(e.getMessage());
+			return new ResponseEntity<Object>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}	
 
