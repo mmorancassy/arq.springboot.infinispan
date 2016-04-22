@@ -60,7 +60,7 @@ public class ReleaseController {
 	private static final Logger LOG = LoggerFactory.getLogger(ReleaseController.class);
 	
 	// Release collection
-	private static final String RELEASE_COLLECTION = "garbage";
+	private static final String RELEASE_COLLECTION = "releases";
 	
 	@Autowired
 	private DatabaseProvider mongoProvider;		
