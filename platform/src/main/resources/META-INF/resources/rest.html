@@ -1286,7 +1286,10 @@
 	}
 	
 	window.onload = function() {
- 		fetchdoc('http://localhost:8080/apidoc');
+		var href = window.location.host;
+		var protocol = window.location.protocol;
+
+ 		fetchdoc(protocol + '//' + href + '/apidoc');
 	}
 </script>
 
