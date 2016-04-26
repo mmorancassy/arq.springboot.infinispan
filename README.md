@@ -4,16 +4,16 @@ SpringBoot concept test integrated with MongoDB and Infinispan in memory data gr
 
 	- Para hacer el build del proyecto ejecutar (necesita MongoDB levantado para pasar los tests)
 		
-* gradle build
+> gradle build
 		
 	- Para lanzar la aplicación:
 		
-* java -jar platform-1.0-SNAPSHOT.jar
+> java -jar platform-1.0-SNAPSHOT.jar
 			
 	- Para acceder al api rest mediante la URL:
 		
-* http://localhost:8080/api todas las peticiones http son redirigidas a peticiones seguras
+> http://localhost:8080/api todas las peticiones http son redirigidas a peticiones seguras
 		
 	- Para descargar las dependencias de node, desde el directorio front/src/main es necesario ejecutar:
 	
-* npm install
+> npm install
