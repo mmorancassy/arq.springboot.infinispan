@@ -4,4 +4,5 @@ dependencies {
 	compile 'org.jsondoc:spring-boot-starter-jsondoc:1.2.13'
 	compile 'org.jsondoc:jsondoc-ui-webjar:1.2.13'
     compile project(':persistence')
+    compile project(':front')
 }
