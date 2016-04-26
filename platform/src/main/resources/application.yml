@@ -1,0 +1,21 @@
+server:
+    port: 8443
+jsondoc:
+    basePath: https://localhost:8443
+---
+
+spring:
+    profiles: development
+server:
+    port: 8080
+jsondoc:
+    basePath: http://localhost:8080
+    
+---
+
+spring:
+    profiles: production
+server:
+    port: 8443
+jsondoc:
+    basePath: https://localhost:8443
