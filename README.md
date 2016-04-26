@@ -12,7 +12,7 @@ SpringBoot concept test integrated with MongoDB and Infinispan in memory data gr
 			
 	- Para acceder al api rest mediante la URL:
 		
-> http://localhost:8080/api todas las peticiones http son redirigidas a peticiones seguras
+> [[http://localhost:8080/api]] todas las peticiones http son redirigidas a peticiones seguras
 		
 	- Para descargar las dependencias de node, desde el directorio front/src/main es necesario ejecutar:
 	
