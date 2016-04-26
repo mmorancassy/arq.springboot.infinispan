@@ -2,7 +2,7 @@
 
 SpringBoot concept test integrated with MongoDB and Infinispan in memory data grid
 
-	* Para hacer el build del proyecto ejecutar (necesita MongoDB levantado para pasar los tests)
+	- Para hacer el build del proyecto ejecutar (necesita MongoDB levantado para pasar los tests)
 		
 * gradle build
 		
