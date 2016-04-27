@@ -1,6 +1,11 @@
 description = 'Persistence module'
+
+ext {
+	infinispanVersion = '8.2.1.Final'
+}
+
 dependencies {
-	compile 'org.springframework.boot:spring-boot-starter-web'
-	compile 'org.springframework.boot:spring-boot-starter-data-mongodb'	
-    compile 'org.infinispan:infinispan-core:8.2.1.Final'
+	compile("org.springframework.boot:spring-boot-starter-web")
+	compile("org.springframework.boot:spring-boot-starter-data-mongodb")	
+    compile("org.infinispan:infinispan-core:${infinispanVersion}")
 }
