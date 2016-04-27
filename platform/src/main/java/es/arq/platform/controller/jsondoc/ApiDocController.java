@@ -31,7 +31,7 @@ public class ApiDocController {
 
 	private MethodDisplay displayMethodAs = MethodDisplay.URI;
 	
-	@RequestMapping(value = {"/", "/api"})
+	@RequestMapping(value = {"/api"})
 	public String index() {
 		return "rest.html";
 	}	

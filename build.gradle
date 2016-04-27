@@ -41,10 +41,7 @@ subprojects {
 		
 		jar {
 		    from 'src/main/'
-		
-		    // Jar contains duplicate empty folders, see Gradle issue:
-		    // http://issues.gradle.org/browse/GRADLE-1830
-		    // so we need to set includeEmptyDirs to false
+
 		    includeEmptyDirs = false
 		}	
 	}

@@ -2,6 +2,16 @@ server:
     port: 8443
 jsondoc:
     basePath: https://localhost:8443
+    
+---
+
+spring:
+    profiles: local
+server:
+    port: 8443
+jsondoc:
+    basePath: https://localhost:8443
+        
 ---
 
 spring:
