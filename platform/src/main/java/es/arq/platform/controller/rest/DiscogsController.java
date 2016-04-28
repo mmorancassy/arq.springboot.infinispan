@@ -26,10 +26,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.arq.persistence.provider.exceptions.PersistenceException;
 import es.arq.platform.controller.dto.Release;
 import es.arq.platform.controller.dto.StatusError;
-import es.arq.platform.services.ReleaseService;
+import es.arq.platform.services.DiscogsService;
 
 /**
  * Response codes:
@@ -48,22 +47,22 @@ import es.arq.platform.services.ReleaseService;
  *
  */
 
-@Api(name = "Music Releases service", 
-	 description = "Methods for managing Music personal collection", 
+@Api(name = "Discogs Releases service", 
+	 description = "Methods for managing Discogs personal collection", 
 	 visibility = ApiVisibility.PUBLIC, 
 	 stage = ApiStage.ALPHA)
 @RestController
-@RequestMapping(value="/api/v1/releases", produces=MediaType.APPLICATION_JSON_VALUE)
-public class ReleaseController {
+@RequestMapping(value="/api/v1/discogs", produces=MediaType.APPLICATION_JSON_VALUE)
+public class DiscogsController {
 
 	// The Logger
-	private static final Logger LOG = LoggerFactory.getLogger(ReleaseController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DiscogsController.class);
 	
 	// Release collection
 	private static final String RELEASE_COLLECTION = "releases";
 
 	@Autowired
-	private ReleaseService releaseService;
+	private DiscogsService discogsService;
 	
 	@ApiMethod(description="Devuelve un documento con la información relativa a un disco", 
 			   verb=ApiVerb.GET,
@@ -80,11 +79,11 @@ public class ReleaseController {
     													  @PathVariable String id) {
     	String document = null;
     	try {
-    		document = releaseService.findById(id);
+    		document = null;
     		
 			return new ResponseEntity<Object>(document, HttpStatus.OK);
 			
-		} catch (PersistenceException e) {
+		} catch (Exception e) {
 			StatusError errorDTO = new StatusError();
 			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			errorDTO.setErrorMessage(e.getMessage());
@@ -107,11 +106,11 @@ public class ReleaseController {
     	List<String> documents = null;
     	try {
     		// TODO add RequestParam for limit
-    		documents = releaseService.findAll();
+    		documents = discogsService.findCollectionByUser("danzig6661");
 			
     		return new ResponseEntity<Object>(documents, HttpStatus.OK);
     		
-		} catch (PersistenceException e) {
+		} catch (Exception e) {
 			StatusError errorDTO = new StatusError();
 			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			errorDTO.setErrorMessage(e.getMessage());
@@ -135,11 +134,11 @@ public class ReleaseController {
 		
 		String objectId = null;
 		try {
-			objectId = releaseService.insert(release.toString());
+			objectId = null;
 			
 			return new ResponseEntity<Object>(objectId, HttpStatus.CREATED);
 			
-		} catch (PersistenceException e) {
+		} catch (Exception e) {
 			StatusError errorDTO = new StatusError();
 			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			errorDTO.setErrorMessage(e.getMessage());
@@ -161,11 +160,11 @@ public class ReleaseController {
 	public @ApiResponseObject ResponseEntity<Object> update(@ApiBodyObject @RequestBody Release release) {
 		String updatedDocument = null;
 		try {
-			updatedDocument = releaseService.update(release.toString());		
+			updatedDocument = null;		
 			
 			return new ResponseEntity<Object>(updatedDocument, HttpStatus.OK);
 			
-		} catch (PersistenceException e) {
+		} catch (Exception e) {
 			StatusError errorDTO = new StatusError();
 			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			errorDTO.setErrorMessage(e.getMessage());
@@ -187,7 +186,7 @@ public class ReleaseController {
 	public @ApiResponseObject ResponseEntity<Object> delete(@ApiPathParam(name="id", format="String", description="ID del objeto a borrar en la base de datos") 
 	  														@PathVariable String id) {
 		try {
-			boolean result = releaseService.delete(id);
+			boolean result = false;
 			
 			String message = "";
 			if (result) {
@@ -198,7 +197,7 @@ public class ReleaseController {
 			
 			return new ResponseEntity<Object>(message, HttpStatus.OK);
 			
-		} catch (PersistenceException e) {
+		} catch (Exception e) {
 			StatusError errorDTO = new StatusError();
 			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			errorDTO.setErrorMessage(e.getMessage());

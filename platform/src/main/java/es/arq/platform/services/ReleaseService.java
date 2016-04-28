@@ -24,6 +24,9 @@ public class ReleaseService {
 	private static final String RELEASE_COLLECTION = "releases";
 	
 	@Autowired
+	private DiscogsService discogsService;
+	
+	@Autowired
 	private DatabaseProvider mongoProvider;	
 	
 	@HystrixCommand(fallbackMethod="retrieveFallbackFindById")
