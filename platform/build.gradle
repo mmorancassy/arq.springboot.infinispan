@@ -1,11 +1,8 @@
 description = 'SpringBoot module'
 
-ext {
-	jsonDocUIVersion = '1.2.13'
-}
-
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
+	compile("org.springframework.cloud:spring-cloud-starter-hystrix:${springCloudVersion}")
 	compile("org.jsondoc:spring-boot-starter-jsondoc:${jsonDocUIVersion}")
 	compile("org.jsondoc:jsondoc-ui-webjar:${jsonDocUIVersion}")
     compile project(':persistence')

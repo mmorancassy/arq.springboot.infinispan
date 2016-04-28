@@ -30,6 +30,7 @@ import es.arq.persistence.provider.DatabaseProvider;
 import es.arq.persistence.provider.exceptions.PersistenceException;
 import es.arq.platform.controller.dto.Release;
 import es.arq.platform.controller.dto.StatusError;
+import es.arq.platform.services.ReleaseService;
 
 /**
  * Response codes:
@@ -61,9 +62,9 @@ public class ReleaseController {
 	
 	// Release collection
 	private static final String RELEASE_COLLECTION = "releases";
-	
+
 	@Autowired
-	private DatabaseProvider mongoProvider;		
+	private ReleaseService releaseService;
 	
 	@ApiMethod(description="Devuelve un documento con la información relativa a un disco", 
 			   verb=ApiVerb.GET,
@@ -80,7 +81,7 @@ public class ReleaseController {
     													  @PathVariable String id) {
     	String document = null;
     	try {
-    		document = mongoProvider.getById(RELEASE_COLLECTION, id);
+    		document = releaseService.findById(id);
     		
 			return new ResponseEntity<Object>(document, HttpStatus.OK);
 			
@@ -107,7 +108,7 @@ public class ReleaseController {
     	List<String> documents = null;
     	try {
     		// TODO add RequestParam for limit
-    		documents = mongoProvider.query("", RELEASE_COLLECTION, 100);
+    		documents = releaseService.findAll();
 			
     		return new ResponseEntity<Object>(documents, HttpStatus.OK);
     		
@@ -135,7 +136,7 @@ public class ReleaseController {
 		
 		String objectId = null;
 		try {
-			objectId = mongoProvider.insert(release.toString(), RELEASE_COLLECTION);
+			objectId = releaseService.insert(release.toString());
 			
 			return new ResponseEntity<Object>(objectId, HttpStatus.CREATED);
 			
@@ -161,7 +162,7 @@ public class ReleaseController {
 	public @ApiResponseObject ResponseEntity<Object> update(@ApiBodyObject @RequestBody Release release) {
 		String updatedDocument = null;
 		try {
-			updatedDocument = mongoProvider.update(release.toString(), RELEASE_COLLECTION);		
+			updatedDocument = releaseService.update(release.toString());		
 			
 			return new ResponseEntity<Object>(updatedDocument, HttpStatus.OK);
 			
@@ -187,7 +188,7 @@ public class ReleaseController {
 	public @ApiResponseObject ResponseEntity<Object> delete(@ApiPathParam(name="id", format="String", description="ID del objeto a borrar en la base de datos") 
 	  														@PathVariable String id) {
 		try {
-			boolean result = mongoProvider.delete(id, RELEASE_COLLECTION);
+			boolean result = releaseService.delete(id);
 			
 			String message = "";
 			if (result) {
