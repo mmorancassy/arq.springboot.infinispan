@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.arq.platform.controller.dto.DiscogsRelease;
 import es.arq.platform.controller.dto.Release;
 import es.arq.platform.controller.dto.StatusError;
 import es.arq.platform.services.DiscogsService;
@@ -102,19 +103,20 @@ public class DiscogsController {
 			  			  @ApiError(code="500", description="Internal Server Error")})	
     @RequestMapping(method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, headers={HttpHeaders.AUTHORIZATION})
     @ResponseBody
-    public @ApiResponseObject ResponseEntity<Object> findAll() {
-    	List<String> documents = null;
+    public @ApiResponseObject ResponseEntity<DiscogsRelease> findAll() {
+		DiscogsRelease document = null;
     	try {
-    		// TODO add RequestParam for limit
-    		documents = discogsService.findCollectionByUser("danzig6661");
+    		// TODO add RequestParam for limit + query parameters
+    		document = discogsService.findCollectionByUser("danzig6661");
 			
-    		return new ResponseEntity<Object>(documents, HttpStatus.OK);
+    		return new ResponseEntity<DiscogsRelease>(document, HttpStatus.OK);
     		
 		} catch (Exception e) {
+			// TODO tratamiento de errores
 			StatusError errorDTO = new StatusError();
 			errorDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			errorDTO.setErrorMessage(e.getMessage());
-			return new ResponseEntity<Object>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<DiscogsRelease>(new DiscogsRelease(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
     }
 	

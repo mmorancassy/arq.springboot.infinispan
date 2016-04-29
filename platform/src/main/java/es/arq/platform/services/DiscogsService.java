@@ -44,8 +44,7 @@ public class DiscogsService {
 	}
 	
 	@HystrixCommand(fallbackMethod="retrieveFallbackFindCollectionByUser")
-	public List<String> findCollectionByUser(String userId) {
-		List<String> userCollection =  new ArrayList<String>();
+	public DiscogsRelease findCollectionByUser(String userId) {
 		String endpoint = GET_COLLECTION_BY_USER.replace("<userid>", userId);
 		
 		// GET Request
@@ -55,17 +54,15 @@ public class DiscogsService {
 		
 		ResponseEntity<DiscogsRelease> releases = restTemplate.getForEntity(endpoint, DiscogsRelease.class);
 		
-		String documents = releases.getBody().toString();
+		DiscogsRelease document = releases.getBody();
 		
-		LOG.info("Objects retrieved from database: " + documents);
+		LOG.info("Objects retrieved from database: " + document.toString());
 		
-		userCollection.add(documents);
-		
-		return userCollection;
+		return document;
 	}
 	
-	public List<String> retrieveFallbackFindCollectionByUser(String userId) {
-		return new ArrayList<String>();
+	public DiscogsRelease retrieveFallbackFindCollectionByUser(String userId) {
+		return new DiscogsRelease();
 	}
 
 }
