@@ -1,12 +1,9 @@
 package es.arq.platform.controller.dto;
 
-import java.util.Arrays;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * {
- * 	"releases": [{
+ *{
  *		"instance_id": 67567847,
  *		"date_added": "2014-02-09T11:54:12-08:00",
  *		"basic_information": {
@@ -50,27 +47,68 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  *		},
  *		"id": 3791972,
  *		"rating": 5
- *	}]
  *}
  * @author mmoran
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DiscogsRelease {
+public class DiscogsItem {
 	
-	private DiscogsItem[] releases;
+	private String instance_id;
+	
+	private String date_added;
+	
+	private String id;
+	
+	private String rating;
+	
+	private DiscogsBasicInformation basic_information;
 
-	public DiscogsItem[] getReleases() {
-		return releases;
+	public String getInstance_id() {
+		return instance_id;
 	}
 
-	public void setReleases(DiscogsItem[] releases) {
-		this.releases = releases;
+	public void setInstance_id(String instance_id) {
+		this.instance_id = instance_id;
+	}
+
+	public String getDate_added() {
+		return date_added;
+	}
+
+	public void setDate_added(String date_added) {
+		this.date_added = date_added;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getRating() {
+		return rating;
+	}
+
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+	
+	public DiscogsBasicInformation getBasic_information() {
+		return basic_information;
+	}
+
+	public void setBasic_information(DiscogsBasicInformation basic_information) {
+		this.basic_information = basic_information;
 	}
 
 	@Override
 	public String toString() {
-		return "{\"releases\": " + Arrays.toString(releases) + "}";
+		return "{\"instance_id\": \"" + instance_id + "\", \"date_added\": \""
+				+ date_added + "\", \"id\": \"" + id + "\", \"rating\": \"" + rating
+				+ "\", \"basic_information\": " + basic_information.toString() + "}";
 	}
-
+	
 }
