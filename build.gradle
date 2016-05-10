@@ -87,6 +87,5 @@ subprojects {
 		bootRepackage {
 	      mainClass = 'es.arq.platform.application.WebApplication'
 		}  	    
-	}	
-  
+	}	  
 }
