@@ -1,6 +1,6 @@
 ## SpringBoot-MongoDB-Infinispan architecture
 
-SpringBoot concept test integrated with MongoDB and Infinispan in memory data grid
+SpringBoot concept test integrated with MongoDB (using async driver) and Infinispan in memory data grid
 
 	- Para hacer el build del proyecto ejecutar (necesita MongoDB levantado para pasar los tests)
 		
